@@ -63,6 +63,11 @@ static bool glfw_initialized = false;
 
 void WindowSystemInit() {
 	glfwSetErrorCallback(ErrorCallback);
+#if __APPLE__
+	// Keep the working directory. By default GLFW changes it to the Resources folder of the app bundle the
+	// process runs from, e.g. Python.app of a framework CPython, which breaks every relative asset path.
+	glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
+#endif
 	int ret = glfwInit();
 	__RASSERT_MSG__(ret == GLFW_TRUE, "Failed to initialize window system");
 	ConnectWindowSystemSignals();
