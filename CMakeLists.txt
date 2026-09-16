@@ -74,8 +74,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
-	message(STATUS "! Forcing embedded build since system processor is 'arm'")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^arm" AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^arm64")
+	message(STATUS "! Forcing embedded build since system processor is 32-bit 'arm'")
 	set(HG_EMBEDDED ON FORCE)
 endif()
 

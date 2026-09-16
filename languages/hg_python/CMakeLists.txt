@@ -36,7 +36,15 @@ endif()
 
 target_compile_definitions(hg_python PUBLIC Py_LIMITED_API=0x03020000)
 target_include_directories(hg_python PUBLIC ${Python3_INCLUDE_DIRS})
-target_link_libraries(hg_python script engine foundation platform ${Python3_LIBRARIES})
+if(APPLE)
+	# Resolve CPython symbols from the host interpreter at load time. Linking libpython
+	# loads a second, uninitialized interpreter into processes whose python executable
+	# embeds the runtime statically (e.g. uv's python-build-standalone), and the import segfaults.
+	target_link_libraries(hg_python script engine foundation platform)
+	target_link_options(hg_python PRIVATE -undefined dynamic_lookup)
+else()
+	target_link_libraries(hg_python script engine foundation platform ${Python3_LIBRARIES})
+endif()
 set_target_properties(hg_python PROPERTIES FOLDER "harfang/languages")
 
 if(HG_PYTHON_PIP)
